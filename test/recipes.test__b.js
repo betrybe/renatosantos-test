@@ -2,6 +2,7 @@ const frisby = require('frisby');
 const { MongoClient } = require('mongodb');
 const fs = require('fs');
 const path = require('path');
+const { expect } = require('chai');
 
 const mongoDbUrl = 'mongodb://localhost:27017/Cookmaster';
 const url = 'http://localhost:3000';
@@ -13,7 +14,7 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
   beforeAll(async () => {
     connection = await MongoClient.connect(mongoDbUrl, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
     db = connection.db('Cookmaster');
   });
@@ -22,13 +23,18 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
     await db.collection('users').deleteMany({});
     await db.collection('recipes').deleteMany({});
     const users = [
-      { name: 'admin', email: 'root@email.com', password: 'admin', role: 'admin' },
+      {
+        name: 'admin',
+        email: 'root@email.com',
+        password: 'admin',
+        role: 'admin'
+      },
       {
         name: 'Erick Jacquin',
         email: 'erickjacquin@gmail.com',
         password: '12345678',
-        role: 'user',
-      },
+        role: 'user'
+      }
     ];
     await db.collection('users').insertMany(users);
   });
@@ -41,7 +47,7 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -52,13 +58,13 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 400)
           .then((responseLogin) => {
@@ -72,7 +78,7 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -83,13 +89,13 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Frango assado',
-            ingredients: 'Frango',
+            ingredients: 'Frango'
           })
           .expect('status', 400)
           .then((responseLogin) => {
@@ -103,7 +109,7 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -114,13 +120,13 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Frango assado',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 400)
           .then((responseLogin) => {
@@ -136,14 +142,14 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
         request: {
           headers: {
             Authorization: '6437658488',
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       })
       .post(`${url}/recipes`, {
         name: 'Frango do jacquin',
         ingredients: 'Frango',
-        preparation: '10 min no forno',
+        preparation: '10 min no forno'
       })
       .expect('status', 401)
       .then((responseLogin) => {
@@ -156,7 +162,7 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -167,14 +173,14 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Frango do jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseLogin) => {
@@ -195,7 +201,7 @@ describe('4 - Crie um endpoint para a listagem de receitas', () => {
   beforeAll(async () => {
     connection = await MongoClient.connect(mongoDbUrl, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
     db = connection.db('Cookmaster');
   });
@@ -204,21 +210,27 @@ describe('4 - Crie um endpoint para a listagem de receitas', () => {
     await db.collection('users').deleteMany({});
     await db.collection('recipes').deleteMany({});
     const users = [
-      { name: 'admin', email: 'root@email.com', password: 'admin', role: 'admin' },
+      {
+        name: 'admin',
+        email: 'root@email.com',
+        password: 'admin',
+        role: 'admin'
+      },
       {
         name: 'Erick Jacquin',
         email: 'erickjacquin@gmail.com',
         password: '12345678',
-        role: 'user',
-      },
+        role: 'user'
+      }
     ];
     await db.collection('users').insertMany(users);
     const ListRecipes = [
       {
         name: 'banana caramelizada',
         ingredients: 'banana, açúcar',
-        preparation: 'coloque o açúcar na frigideira até virar caramelo e jogue a banana',
-      },
+        preparation:
+          'coloque o açúcar na frigideira até virar caramelo e jogue a banana'
+      }
     ];
     await db.collection('recipes').insertMany(ListRecipes);
   });
@@ -237,7 +249,7 @@ describe('4 - Crie um endpoint para a listagem de receitas', () => {
         expect(result[0].name).toBe('banana caramelizada');
         expect(result[0].ingredients).toBe('banana, açúcar');
         expect(result[0].preparation).toBe(
-          'coloque o açúcar na frigideira até virar caramelo e jogue a banana',
+          'coloque o açúcar na frigideira até virar caramelo e jogue a banana'
         );
       });
   });
@@ -246,7 +258,7 @@ describe('4 - Crie um endpoint para a listagem de receitas', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -257,14 +269,14 @@ describe('4 - Crie um endpoint para a listagem de receitas', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201);
       });
@@ -272,7 +284,7 @@ describe('4 - Crie um endpoint para a listagem de receitas', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -283,9 +295,9 @@ describe('4 - Crie um endpoint para a listagem de receitas', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .get(`${url}/recipes/`)
           .expect('status', 200)
@@ -294,7 +306,7 @@ describe('4 - Crie um endpoint para a listagem de receitas', () => {
             expect(json[0].name).toBe('banana caramelizada');
             expect(json[0].ingredients).toBe('banana, açúcar');
             expect(json[0].preparation).toBe(
-              'coloque o açúcar na frigideira até virar caramelo e jogue a banana',
+              'coloque o açúcar na frigideira até virar caramelo e jogue a banana'
             );
             expect(json[1].name).toBe('Receita de frango do Jacquin');
             expect(json[1].ingredients).toBe('Frango');
@@ -311,7 +323,7 @@ describe('5 - Crie um endpoint para visualizar uma receita específica', () => {
   beforeAll(async () => {
     connection = await MongoClient.connect(mongoDbUrl, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
     db = connection.db('Cookmaster');
   });
@@ -320,21 +332,27 @@ describe('5 - Crie um endpoint para visualizar uma receita específica', () => {
     await db.collection('users').deleteMany({});
     await db.collection('recipes').deleteMany({});
     const users = [
-      { name: 'admin', email: 'root@email.com', password: 'admin', role: 'admin' },
+      {
+        name: 'admin',
+        email: 'root@email.com',
+        password: 'admin',
+        role: 'admin'
+      },
       {
         name: 'Erick Jacquin',
         email: 'erickjacquin@gmail.com',
         password: '12345678',
-        role: 'user',
-      },
+        role: 'user'
+      }
     ];
     await db.collection('users').insertMany(users);
     const ListRecipes = [
       {
         name: 'banana caramelizada',
         ingredients: 'banana, açúcar',
-        preparation: 'coloque o açúcar na frigideira até virar caramelo e jogue a banana',
-      },
+        preparation:
+          'coloque o açúcar na frigideira até virar caramelo e jogue a banana'
+      }
     ];
     await db.collection('recipes').insertMany(ListRecipes);
   });
@@ -349,7 +367,7 @@ describe('5 - Crie um endpoint para visualizar uma receita específica', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -360,14 +378,14 @@ describe('5 - Crie um endpoint para visualizar uma receita específica', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipe) => {
@@ -395,7 +413,7 @@ describe('5 - Crie um endpoint para visualizar uma receita específica', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -406,14 +424,14 @@ describe('5 - Crie um endpoint para visualizar uma receita específica', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipe) => {
@@ -425,7 +443,7 @@ describe('5 - Crie um endpoint para visualizar uma receita específica', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -436,9 +454,9 @@ describe('5 - Crie um endpoint para visualizar uma receita específica', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .get(`${url}/recipes/${resultRecipe.recipe._id}`)
           .expect('status', 200)
@@ -456,7 +474,7 @@ describe('5 - Crie um endpoint para visualizar uma receita específica', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -467,14 +485,14 @@ describe('5 - Crie um endpoint para visualizar uma receita específica', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201);
       });
@@ -482,7 +500,7 @@ describe('5 - Crie um endpoint para visualizar uma receita específica', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -493,9 +511,9 @@ describe('5 - Crie um endpoint para visualizar uma receita específica', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .get(`${url}/recipes/999`)
           .expect('status', 404)
@@ -514,7 +532,7 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
   beforeAll(async () => {
     connection = await MongoClient.connect(mongoDbUrl, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
     db = connection.db('Cookmaster');
   });
@@ -523,21 +541,27 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
     await db.collection('users').deleteMany({});
     await db.collection('recipes').deleteMany({});
     const users = [
-      { name: 'admin', email: 'root@email.com', password: 'admin', role: 'admin' },
+      {
+        name: 'admin',
+        email: 'root@email.com',
+        password: 'admin',
+        role: 'admin'
+      },
       {
         name: 'Erick Jacquin',
         email: 'erickjacquin@gmail.com',
         password: '12345678',
-        role: 'user',
-      },
+        role: 'user'
+      }
     ];
     await db.collection('users').insertMany(users);
     const ListRecipes = [
       {
         name: 'banana caramelizada',
         ingredients: 'banana, açúcar',
-        preparation: 'coloque o açúcar na frigideira até virar caramelo e jogue a banana',
-      },
+        preparation:
+          'coloque o açúcar na frigideira até virar caramelo e jogue a banana'
+      }
     ];
     await db.collection('recipes').insertMany(ListRecipes);
   });
@@ -552,7 +576,7 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -563,14 +587,14 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipes) => {
@@ -583,7 +607,7 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
       .put(`${url}/recipes/${resultRecipes.recipe._id}`, {
         name: 'Receita de frango do Jacquin editado',
         ingredients: 'Frango editado',
-        preparation: '10 min no forno editado',
+        preparation: '10 min no forno editado'
       })
       .expect('status', 401)
       .then((response) => {
@@ -599,7 +623,7 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -610,14 +634,14 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipes) => {
@@ -631,14 +655,14 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
         request: {
           headers: {
             Authorization: '99999999',
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       })
       .put(`${url}/recipes/${resultRecipes.recipe._id}`, {
         name: 'Receita de frango do Jacquin editado',
         ingredients: 'Frango editado',
-        preparation: '10 min no forno editado',
+        preparation: '10 min no forno editado'
       })
       .expect('status', 401)
       .then((response) => {
@@ -655,7 +679,7 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -666,14 +690,14 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipes) => {
@@ -687,14 +711,14 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
         request: {
           headers: {
             Authorization: result.token,
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       })
       .put(`${url}/recipes/${resultRecipes.recipe._id}`, {
         name: 'Receita de frango do Jacquin editado',
         ingredients: 'Frango editado',
-        preparation: '10 min no forno editado',
+        preparation: '10 min no forno editado'
       })
       .expect('status', 200)
       .then((response) => {
@@ -715,7 +739,7 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -726,14 +750,14 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipes) => {
@@ -745,7 +769,7 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'root@email.com',
-        password: 'admin',
+        password: 'admin'
       })
       .expect('status', 200)
       .then((response) => {
@@ -758,14 +782,14 @@ describe('7 - Crie um endpoint para a edição de uma receita', () => {
         request: {
           headers: {
             Authorization: resultAdmin.token,
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       })
       .put(`${url}/recipes/${resultRecipes.recipe._id}`, {
         name: 'Receita de frango do Jacquin editado',
         ingredients: 'Frango editado',
-        preparation: '10 min no forno editado',
+        preparation: '10 min no forno editado'
       })
       .expect('status', 200)
       .then((response) => {
@@ -787,7 +811,7 @@ describe('8 - Crie um endpoint para a exclusão de uma receita', () => {
   beforeAll(async () => {
     connection = await MongoClient.connect(mongoDbUrl, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
     db = connection.db('Cookmaster');
   });
@@ -796,21 +820,27 @@ describe('8 - Crie um endpoint para a exclusão de uma receita', () => {
     await db.collection('users').deleteMany({});
     await db.collection('recipes').deleteMany({});
     const users = [
-      { name: 'admin', email: 'root@email.com', password: 'admin', role: 'admin' },
+      {
+        name: 'admin',
+        email: 'root@email.com',
+        password: 'admin',
+        role: 'admin'
+      },
       {
         name: 'Erick Jacquin',
         email: 'erickjacquin@gmail.com',
         password: '12345678',
-        role: 'user',
-      },
+        role: 'user'
+      }
     ];
     await db.collection('users').insertMany(users);
     const ListRecipes = [
       {
         name: 'banana caramelizada',
         ingredients: 'banana, açúcar',
-        preparation: 'coloque o açúcar na frigideira até virar caramelo e jogue a banana',
-      },
+        preparation:
+          'coloque o açúcar na frigideira até virar caramelo e jogue a banana'
+      }
     ];
     await db.collection('recipes').insertMany(ListRecipes);
   });
@@ -825,7 +855,7 @@ describe('8 - Crie um endpoint para a exclusão de uma receita', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -836,14 +866,14 @@ describe('8 - Crie um endpoint para a exclusão de uma receita', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipes) => {
@@ -869,7 +899,7 @@ describe('8 - Crie um endpoint para a exclusão de uma receita', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -880,14 +910,14 @@ describe('8 - Crie um endpoint para a exclusão de uma receita', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipes) => {
@@ -901,9 +931,9 @@ describe('8 - Crie um endpoint para a exclusão de uma receita', () => {
         request: {
           headers: {
             Authorization: result.token,
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       })
       .delete(`${url}/recipes/${resultRecipes.recipe._id}`)
       .expect('status', 204);
@@ -916,7 +946,7 @@ describe('8 - Crie um endpoint para a exclusão de uma receita', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -927,14 +957,14 @@ describe('8 - Crie um endpoint para a exclusão de uma receita', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipes) => {
@@ -946,7 +976,7 @@ describe('8 - Crie um endpoint para a exclusão de uma receita', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'root@email.com',
-        password: 'admin',
+        password: 'admin'
       })
       .expect('status', 200)
       .then((response) => {
@@ -959,9 +989,9 @@ describe('8 - Crie um endpoint para a exclusão de uma receita', () => {
         request: {
           headers: {
             Authorization: resultAdmin.token,
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       })
       .delete(`${url}/recipes/${resultRecipes.recipe._id}`)
       .expect('status', 204);
@@ -975,7 +1005,7 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
   beforeAll(async () => {
     connection = await MongoClient.connect(mongoDbUrl, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
     db = connection.db('Cookmaster');
   });
@@ -984,21 +1014,27 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
     await db.collection('users').deleteMany({});
     await db.collection('recipes').deleteMany({});
     const users = [
-      { name: 'admin', email: 'root@email.com', password: 'admin', role: 'admin' },
+      {
+        name: 'admin',
+        email: 'root@email.com',
+        password: 'admin',
+        role: 'admin'
+      },
       {
         name: 'Erick Jacquin',
         email: 'erickjacquin@gmail.com',
         password: '12345678',
-        role: 'user',
-      },
+        role: 'user'
+      }
     ];
     await db.collection('users').insertMany(users);
     const ListRecipes = [
       {
         name: 'banana caramelizada',
         ingredients: 'banana, açúcar',
-        preparation: 'coloque o açúcar na frigideira até virar caramelo e jogue a banana',
-      },
+        preparation:
+          'coloque o açúcar na frigideira até virar caramelo e jogue a banana'
+      }
     ];
     await db.collection('recipes').insertMany(ListRecipes);
   });
@@ -1008,7 +1044,13 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
   });
 
   it('Será validado que é possível enviar foto com usuário autenticado', async () => {
-    const photoFile = path.resolve(__dirname, '..', 'src', 'uploads', 'ratinho.jpg');
+    const photoFile = path.resolve(
+      __dirname,
+      '..',
+      'src',
+      'uploads',
+      'ratinho.jpg'
+    );
     const content = fs.createReadStream(photoFile);
     const formData = frisby.formData();
 
@@ -1020,7 +1062,7 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -1031,14 +1073,14 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipes) => {
@@ -1052,11 +1094,13 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
         request: {
           headers: {
             Authorization: result.token,
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       })
-      .put(`${url}/recipes/${resultRecipes.recipe._id}/image`, { body: formData })
+      .put(`${url}/recipes/${resultRecipes.recipe._id}/image`, {
+        body: formData
+      })
       .expect('status', 200);
   });
 
@@ -1073,7 +1117,7 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -1084,14 +1128,14 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipes) => {
@@ -1105,16 +1149,20 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
         request: {
           headers: {
             Authorization: result.token,
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       })
-      .put(`${url}/recipes/${resultRecipes.recipe._id}/image`, { body: formData })
+      .put(`${url}/recipes/${resultRecipes.recipe._id}/image`, {
+        body: formData
+      })
       .expect('status', 200)
       .then((response) => {
         const { body } = response;
         result = JSON.parse(body);
-        expect(result.image).toBe(`localhost:3000/src/uploads/${resultRecipes.recipe._id}.jpeg`);
+        expect(result.image).toBe(
+          `localhost:3000/src/uploads/${resultRecipes.recipe._id}.jpeg`
+        );
         expect(result).toHaveProperty('_id');
         expect(result).toHaveProperty('userId');
         expect(result).toHaveProperty('name');
@@ -1136,7 +1184,7 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -1147,14 +1195,14 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipes) => {
@@ -1164,7 +1212,9 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
       });
 
     await frisby
-      .put(`${url}/recipes/${resultRecipes.recipe._id}/image`, { body: formData })
+      .put(`${url}/recipes/${resultRecipes.recipe._id}/image`, {
+        body: formData
+      })
       .expect('status', 401);
   });
 
@@ -1182,7 +1232,7 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -1193,14 +1243,14 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipes) => {
@@ -1212,7 +1262,7 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
     await frisby
       .post(`${url}/login/`, {
         email: 'root@email.com',
-        password: 'admin',
+        password: 'admin'
       })
       .expect('status', 200)
       .then((response) => {
@@ -1225,16 +1275,20 @@ describe('9 - Crie um endpoint para a adição de uma imagem a uma receita', () 
         request: {
           headers: {
             Authorization: resultAdmin.token,
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       })
-      .put(`${url}/recipes/${resultRecipes.recipe._id}/image`, { body: formData })
+      .put(`${url}/recipes/${resultRecipes.recipe._id}/image`, {
+        body: formData
+      })
       .expect('status', 200)
       .then((response) => {
         const { body } = response;
         result = JSON.parse(body);
-        expect(result.image).toBe(`localhost:3000/src/uploads/${resultRecipes.recipe._id}.jpeg`);
+        expect(result.image).toBe(
+          `localhost:3000/src/uploads/${resultRecipes.recipe._id}.jpeg`
+        );
         expect(result).toHaveProperty('_id');
         expect(result).toHaveProperty('userId');
         expect(result).toHaveProperty('name');
@@ -1251,7 +1305,7 @@ describe('10 - Crie um endpoint para acessar a imagem de uma receita', () => {
   beforeAll(async () => {
     connection = await MongoClient.connect(mongoDbUrl, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
     db = connection.db('Cookmaster');
   });
@@ -1260,21 +1314,27 @@ describe('10 - Crie um endpoint para acessar a imagem de uma receita', () => {
     await db.collection('users').deleteMany({});
     await db.collection('recipes').deleteMany({});
     const users = [
-      { name: 'admin', email: 'root@email.com', password: 'admin', role: 'admin' },
+      {
+        name: 'admin',
+        email: 'root@email.com',
+        password: 'admin',
+        role: 'admin'
+      },
       {
         name: 'Erick Jacquin',
         email: 'erickjacquin@gmail.com',
         password: '12345678',
-        role: 'user',
-      },
+        role: 'user'
+      }
     ];
     await db.collection('users').insertMany(users);
     const ListRecipes = [
       {
         name: 'banana caramelizada',
         ingredients: 'banana, açúcar',
-        preparation: 'coloque o açúcar na frigideira até virar caramelo e jogue a banana',
-      },
+        preparation:
+          'coloque o açúcar na frigideira até virar caramelo e jogue a banana'
+      }
     ];
     await db.collection('recipes').insertMany(ListRecipes);
   });
@@ -1296,7 +1356,7 @@ describe('10 - Crie um endpoint para acessar a imagem de uma receita', () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
-        password: '12345678',
+        password: '12345678'
       })
       .expect('status', 200)
       .then((response) => {
@@ -1307,14 +1367,14 @@ describe('10 - Crie um endpoint para acessar a imagem de uma receita', () => {
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
           .post(`${url}/recipes`, {
             name: 'Receita de frango do Jacquin',
             ingredients: 'Frango',
-            preparation: '10 min no forno',
+            preparation: '10 min no forno'
           })
           .expect('status', 201)
           .then((responseRecipes) => {
@@ -1328,13 +1388,14 @@ describe('10 - Crie um endpoint para acessar a imagem de uma receita', () => {
         request: {
           headers: {
             Authorization: result.token,
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       })
-      .put(`${url}/recipes/${resultRecipes.recipe._id}/image`, { body: formData })
+      .put(`${url}/recipes/${resultRecipes.recipe._id}/image`, {
+        body: formData
+      })
       .expect('status', 200);
-
 
     await frisby
       .setup({
@@ -1342,18 +1403,16 @@ describe('10 - Crie um endpoint para acessar a imagem de uma receita', () => {
           headers: {
             Authorization: result.token,
             'Content-Type': 'application/json'
-          },
-        },
+          }
+        }
       })
       .get(`${url}/images/${resultRecipes.recipe._id}.jpeg`)
       .expect('status', 200)
       .then((response) => {
         const { headers } = response;
-        const symbol = Object.getOwnPropertySymbols(headers)[0]
-        const contentType = headers[symbol]['content-type'][0]
-        expect(contentType).toBe('image/jpeg')
-
+        const symbol = Object.getOwnPropertySymbols(headers)[0];
+        const contentType = headers[symbol]['content-type'][0];
+        expect(contentType).toBe('image/jpeg');
       });
   });
-
 });

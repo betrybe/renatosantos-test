@@ -12,13 +12,18 @@ describe('6 - Crie uma query em mongo que insira uma pessoa usuária com permiss
   beforeAll(async () => {
     connection = await MongoClient.connect(mongoDbUrl, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
     db = connection.db('Cookmaster');
     await db.collection('users').deleteMany({});
     await db.collection('recipes').deleteMany({});
     const users = [
-      { name: 'admin', email: 'root@email.com', password: 'admin', role: 'admin' }
+      {
+        name: 'admin',
+        email: 'root@email.com',
+        password: 'admin',
+        role: 'admin'
+      }
     ];
     await db.collection('users').insertMany(users);
   });
@@ -29,13 +34,14 @@ describe('6 - Crie uma query em mongo que insira uma pessoa usuária com permiss
 
   it('Será validado que o projeto tem um arquivo de seed, com um comando para inserir um usuário root e verifico se consigo fazer login', async () => {
     const fileSeed = fs.readFileSync('./seed.js', 'utf8');
-    expect(fileSeed).toContain('db.users.insertOne({ name: \'admin\', email: \'root@email.com\', password: \'admin\', role: \'admin\' });')
+    expect(fileSeed).toContain(
+      "db.users.insertOne({ name: 'admin', email: 'root@email.com', password: 'admin', role: 'admin' });"
+    );
     await frisby
-      .post(`${url}/login`,
-        {
-          email: 'root@email.com',
-          password: 'admin',
-        })
+      .post(`${url}/login`, {
+        email: 'root@email.com',
+        password: 'admin'
+      })
       .expect('status', 200)
       .then((responseLogin) => {
         const { json } = responseLogin;
@@ -51,7 +57,7 @@ describe('12 - Crie um endpoint para cadastro de pessoas administradoras', () =>
   beforeAll(async () => {
     connection = await MongoClient.connect(mongoDbUrl, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
     db = connection.db('Cookmaster');
   });
@@ -60,8 +66,18 @@ describe('12 - Crie um endpoint para cadastro de pessoas administradoras', () =>
     await db.collection('users').deleteMany({});
     await db.collection('recipes').deleteMany({});
     const users = [
-      { name: 'admin', email: 'root@email.com', password: 'admin', role: 'admin' },
-      { name: 'Erick Jacquin', email: 'erickjacquin@gmail.com', password: '12345678', role: 'user' },
+      {
+        name: 'admin',
+        email: 'root@email.com',
+        password: 'admin',
+        role: 'admin'
+      },
+      {
+        name: 'Erick Jacquin',
+        email: 'erickjacquin@gmail.com',
+        password: '12345678',
+        role: 'user'
+      }
     ];
     await db.collection('users').insertMany(users);
   });
@@ -74,11 +90,10 @@ describe('12 - Crie um endpoint para cadastro de pessoas administradoras', () =>
     let result;
 
     await frisby
-      .post(`${url}/login/`,
-        {
-          email: 'erickjacquin@gmail.com',
-          password: '12345678',
-        })
+      .post(`${url}/login/`, {
+        email: 'erickjacquin@gmail.com',
+        password: '12345678'
+      })
       .expect('status', 200)
       .then((response) => {
         const { body } = response;
@@ -88,16 +103,15 @@ describe('12 - Crie um endpoint para cadastro de pessoas administradoras', () =>
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
-          .post(`${url}/users/admin`,
-            {
-              name: 'usuario admin',
-              email: 'usuarioadmin@email.com',
-              password: 'admin',
-            })
+          .post(`${url}/users/admin`, {
+            name: 'usuario admin',
+            email: 'usuarioadmin@email.com',
+            password: 'admin'
+          })
           .expect('status', 403)
           .then((responseAdmin) => {
             const { json } = responseAdmin;
@@ -110,11 +124,10 @@ describe('12 - Crie um endpoint para cadastro de pessoas administradoras', () =>
     let result;
 
     await frisby
-      .post(`${url}/login/`,
-        {
-          email: 'root@email.com',
-          password: 'admin',
-        })
+      .post(`${url}/login/`, {
+        email: 'root@email.com',
+        password: 'admin'
+      })
       .expect('status', 200)
       .then((response) => {
         const { body } = response;
@@ -124,16 +137,15 @@ describe('12 - Crie um endpoint para cadastro de pessoas administradoras', () =>
             request: {
               headers: {
                 Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
+                'Content-Type': 'application/json'
+              }
+            }
           })
-          .post(`${url}/users/admin`,
-            {
-              name: 'usuario admin',
-              email: 'usuarioadmin@email.com',
-              password: 'admin',
-            })
+          .post(`${url}/users/admin`, {
+            name: 'usuario admin',
+            email: 'usuarioadmin@email.com',
+            password: 'admin'
+          })
           .expect('status', 201)
           .then((responseAdmin) => {
             const { json } = responseAdmin;
