@@ -1,6 +1,6 @@
 const Assertion = require('../common/Assertion');
 
-const NOT_NULL_MESSAGE = 'Invalid entries for User. Try again.';
+const NOT_NULL_MESSAGE = 'Invalid entries. Try again.';
 
 class User {
   constructor({ id, name, email, password, role }) {
@@ -89,11 +89,17 @@ class User {
     return user;
   }
 
-  static async create(repository, generateId, { name, email, password, role }) {
-    await this.validDuplicatedEmail(email);
+  /**
+   *
+   * @param {*} repository
+   * @param {*} params params values to new user
+   * @returns new user
+   */
+  static async create(repository, { name, email, password, role }) {
+    await this.validDuplicatedEmail(repository, email);
 
     const user = new User({
-      id: generateId(),
+      id: repository.nextId(),
       name,
       email,
       password,
@@ -106,8 +112,8 @@ class User {
   }
 
   static async validDuplicatedEmail(repository, email) {
-    const user = await repository.findByEmail(email);
-    Assertion.assertIsNullDuplicated(user, 'Email already registered');
+    const user = await repository.findByField({ field: 'email', value: email });
+    Assertion.assertIsDuplicated(user, 'Email already registered');
   }
 }
 

@@ -1,6 +1,6 @@
 const Assertion = require('../common/Assertion');
 
-const NOT_NULL_MESSAGE = 'Invalid entries for Recipe. Try again.';
+const NOT_NULL_MESSAGE = 'Invalid entries. Try again.';
 /**
  * @description Represent a Recipe in Domain
  */
@@ -69,17 +69,12 @@ class Recipe {
   /**
    *
    * @param {*} repository injection depedency for repository
-   * @param {*} generateId injection depedency for generate o new id
    * @param {*} parameters values to object attributes
    * @returns
    */
-  static async create(
-    repository,
-    generateId,
-    { name, ingredients, preparation, userId }
-  ) {
+  static async create(repository, { name, ingredients, preparation, userId }) {
     const recipe = new Recipe({
-      id: generateId(),
+      id: repository.nextId(),
       name,
       ingredients,
       preparation,
@@ -87,6 +82,25 @@ class Recipe {
     });
 
     return repository.save(recipe.toJson());
+  }
+
+  /**
+   * 
+   * @param {*} repository 
+   * @returns return a list of recipes
+   */
+  static async listAll(repository) {
+    return repository.listAll();
+  }
+
+  /**
+   * 
+   * @param {*} repository 
+   * @param {*} id 
+   * @returns a recipe if exists
+   */
+  static async findById(repository, id) {
+    return repository.findById(id);
   }
 
   /**

@@ -14,8 +14,9 @@ class Assertion {
     }
   }
 
-  static assertIsNullDuplicated(anObject1, aMessage) {
+  static assertIsDuplicated(anObject1, aMessage) {
     if (anObject1) {
+      console.log('anObject1 >>> ', anObject1);
       throw new DuplicationError(aMessage);
     }
   }

@@ -42,7 +42,7 @@ class Repository {
    * @param {*} id
    * @returns
    */
-  async delete(id) {
+  async deleteById(id) {
     if (!this.ObjectId.isValid(id)) return null;
 
     const modelDeleted = await this.connection().then((db) =>
@@ -55,19 +55,6 @@ class Repository {
   }
 
   /**
-   * find an object by field name and value passed by params
-   * @param {*} params object {fied:?, value:?} for querie
-   * @returns
-   */
-  async findByField({ field, value }) {
-    const [modelMongo] = await this.collection
-      .find(JSON.parse(`{"${field}":"${value}"}`))
-      .toArray();
-    if (!modelMongo) return null;
-    return modelMongo;
-  }
-
-  /**
    * Find an object by id on database
    * @param {*} id
    * @returns
@@ -77,12 +64,34 @@ class Repository {
       _id: this.ObjectID(id)
     });
     if (!modelMongo) {
-      throw new NotFoundObjectError(
-        `Object not found in ${this.collectionName}`
-      );
+      throw new NotFoundObjectError('Object not found');
     }
 
     return modelMongo;
+  }
+
+  /**
+   * find an object by field name and value passed by params
+   * @param {*} params object {fied:?, value:?} for querie
+   * @returns a list of registers on repository
+   */
+  async findByField(field, value) {
+    const object = await this.collection
+      .findOne(JSON.parse(`{"${field}":"${value}"}`))
+
+    if (!object) return null;
+    return object;
+  }
+
+  /**
+   * find an object by field name and value passed by params
+   * @param {*} params object {fied:?, value:?} for querie
+   * @returns
+   */
+  async findAll() {
+    const list = await this.collection.find().toArray();
+    if (!list) return;
+    return list;
   }
 }
 
