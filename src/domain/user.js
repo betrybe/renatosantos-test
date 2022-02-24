@@ -111,6 +111,14 @@ class User {
     return user;
   }
 
+  static async findByField(repository, field, value) {
+    const account = await repository.findByField({
+      field,
+      value
+    });
+    return account;
+  }
+
   static async validDuplicatedEmail(repository, email) {
     const user = await repository.findByField({ field: 'email', value: email });
     Assertion.assertIsDuplicated(user, 'Email already registered');

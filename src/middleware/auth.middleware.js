@@ -1,7 +1,7 @@
 import AuthorizationError from '../common/AuthorizationError';
 import auth from '../services/auth.service';
 
-const authenticate = async (req, resp, next) => {
+const validateAuthToken = async (req, resp, next) => {
   try {
     const token = req.headers.authorization;
     const user = await auth.validateAuthToken(token);
@@ -16,4 +16,4 @@ const authenticate = async (req, resp, next) => {
   }
 };
 
-module.exports = authenticate;
+module.exports = validateAuthToken;

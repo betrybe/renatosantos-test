@@ -5,12 +5,26 @@ const jwt = require('jsonwebtoken');
 const TOKEN_AUTH_SECRET = process.env.TOKEN_AUTH_SECRET || 'abr@c@dabrw';
 
 /**
- * @description Generate a new token
+ * @description Generate a new token based on e-mail and name
  * @param {*} param0
  * @returns
  */
-const generateAuthToken = ({ email, role, name }) =>
-  jwt.sign({ email, role, name }, TOKEN_AUTH_SECRET, { expiresIn: '30m' });
+const generateAuthToken = ({ email, name }) =>
+  jwt.sign({ email, name }, TOKEN_AUTH_SECRET, { expiresIn: '30m' });
+
+/**
+ * @description Authenticate user based on e-mail and password
+ * @param {*} email
+ * @param {*} password
+ * @returns
+ */
+const login = async (userDomain, email, password) => {
+  const user = await userDomain.findByField('email', email);
+  if (user.password === password) {
+    return generateAuthToken({ email, name: user.name });
+  }
+  return false;
+};
 
 /**
  * @description Validate a token
@@ -29,4 +43,4 @@ const validateAuthToken = (token) => {
   });
 };
 
-module.exports = { generateAuthToken, validateAuthToken };
+module.exports = { login, validateAuthToken };
